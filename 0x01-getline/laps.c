@@ -28,18 +28,20 @@ void join_race(int id, car_n **head)
 		return;
 	}
 
-	for (search = *head; search->next != NULL; search = search->next)
+	for (search = *head; search->next; search = search->next)
 	{
-		if (search->id == id)
+		if (search->id == id || (search->next)->id == id)
 		{
 			free(new);
 			return;
 		}
-	}
-	if (search->id == id)
-	{
-		free(new);
-		return;
+		if ((new->id < (search->next)->id))
+		{
+			new->next = search->next;
+			search->next = new;
+			printf("Car %i joined the race\n", id);
+			return;
+		}
 	}
 
 	search->next = new;
