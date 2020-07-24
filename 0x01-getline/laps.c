@@ -15,7 +15,6 @@ void join_race(int id, car_n **head)
 	new = malloc(sizeof(car_n));
 	if (!new)
 		return;
-
 	new->id = id;
 	new->n_laps = 0;
 	new->run = 0;
@@ -29,6 +28,7 @@ void join_race(int id, car_n **head)
 	}
 	if (new->id < (*head)->id)
 	{
+		printf("Car %i joined the race\n", id);
 		new->next = *head;
 		*head = new;
 		return;
