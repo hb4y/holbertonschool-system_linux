@@ -8,6 +8,7 @@
  * struct car - linked list
  * @id: id of car
  * @n_laps: number of laps
+ * @run: 1 if make a lap 0 if not
  * @next: points to the next node
  *
  * Description: linked list car structure
@@ -16,6 +17,7 @@ typedef struct car
 {
 	int id;
 	int n_laps;
+	int run;
 	struct car *next;
 } car_n;
 

@@ -18,7 +18,8 @@ void join_race(int id, car_n **head)
 		return;
 
 	new->id = id;
-	new->n_laps = -1;
+	new->n_laps = 0;
+	new->run = 0;
 	new->next = NULL;
 
 	if (!head || !(*head))
@@ -32,6 +33,10 @@ void join_race(int id, car_n **head)
 	{
 		if (search->id == id || (search->next)->id == id)
 		{
+			if (search->id == id)
+				search->run = 1;
+			else
+				(search->next)->run = 1;
 			free(new);
 			return;
 		}
@@ -43,9 +48,7 @@ void join_race(int id, car_n **head)
 			return;
 		}
 	}
-
 	search->next = new;
-
 	printf("Car %i joined the race\n", id);
 }
 
@@ -60,13 +63,12 @@ void print_state(car_n **head)
 {
 	car_n *search;
 
-	for (search = *head; search->next != NULL; search = search->next)
+	for (search = *head; search; search = search->next)
 	{
-		search->n_laps = search->n_laps + 1;
+		search->n_laps = search->n_laps + search->run;
 		printf("Car %i [%i laps]\n", search->id, search->n_laps);
+		search->run = 0;
 	}
-	search->n_laps = search->n_laps + 1;
-	printf("Car %i [%i laps]\n", search->id, search->n_laps);
 }
 
 /**
