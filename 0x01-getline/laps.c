@@ -13,7 +13,6 @@ void join_race(int id, car_n **head)
 	car_n *search, *new;
 
 	new = malloc(sizeof(car_n));
-
 	if (!new)
 		return;
 
@@ -28,19 +27,22 @@ void join_race(int id, car_n **head)
 		printf("Car %i joined the race\n", id);
 		return;
 	}
-
-	for (search = *head; search->next; search = search->next)
+	if (new->id < (*head)->id)
 	{
-		if (search->id == id || (search->next)->id == id)
+		new->next = *head;
+		*head = new;
+		return;
+	}
+	for (search = *head; search; search = search->next)
+	{
+		if (search && search->id == id)
 		{
 			if (search->id == id)
 				search->run = 1;
-			else
-				(search->next)->run = 1;
 			free(new);
 			return;
 		}
-		if ((new->id < (search->next)->id))
+		if (search && (!search->next || (new->id < (search->next)->id)))
 		{
 			new->next = search->next;
 			search->next = new;
@@ -48,8 +50,6 @@ void join_race(int id, car_n **head)
 			return;
 		}
 	}
-	search->next = new;
-	printf("Car %i joined the race\n", id);
 }
 
 /**
