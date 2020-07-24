@@ -31,10 +31,16 @@ void join_race(int id, car_n **head)
 	for (search = *head; search->next != NULL; search = search->next)
 	{
 		if (search->id == id)
+		{
+			free(new);
 			return;
+		}
 	}
 	if (search->id == id)
+	{
+		free(new);
 		return;
+	}
 
 	search->next = new;
 
@@ -72,7 +78,7 @@ void free_memory(car_n **head)
 {
 	car_n *current, *prev;
 
-	if (*head == NULL)
+	if (head == NULL || *head == NULL)
 		return;
 
 	current = prev = *head;
