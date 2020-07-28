@@ -87,10 +87,9 @@ char *_getline(const int fd)
 				if (!line)
 					return (NULL);
 				memset(line, '\0', (j - i));
-				strncpy(line, &buf[i], (j - i));
+				memcpy(line, &buf[i], (j - i));
 				line[(j - i)] = '\0';
 				create_node(&head, fd, line);
-				printf("::[%s]::", line);
 				i = j + 1;
 			}
 		}
