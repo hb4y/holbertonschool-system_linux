@@ -42,6 +42,11 @@ char *get_line(line_n **head, int fd)
 
 	for (current = *head; current; current = current->next)
 	{
+		if (current->end)
+		{
+			free_all(*head);
+			return (NULL);
+		}
 		if (current->fd == fd && current->read)
 		{
 			if (!current->next || (current->next && (current->next)->fd != fd))
