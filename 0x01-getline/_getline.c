@@ -1,6 +1,27 @@
 #include "_getline.h"
 
 /**
+ * free_all - free all alocated and zero the statics.
+ * Description: free all alocated and zero the statics.
+ * @head: head of list.
+ * Return: return pointer to line.
+ **/
+
+void free_all(line_n *head)
+{
+	line_n *current;
+
+	while (head)
+	{
+		current = head;
+		head = head->next;
+		if (current->line)
+			free(current->line);
+		free_all(current);
+	}
+}
+
+/**
  * get_line - return 1 line.
  * Description: return 1 line.
  * @head: head of list.
@@ -11,6 +32,7 @@
 char *get_line(line_n **head, int fd)
 {
 	line_n *current;
+	char *l;
 
 	if (!head || !*head)
 		return (NULL);
@@ -19,6 +41,10 @@ char *get_line(line_n **head, int fd)
 	{
 		if (current->fd == fd && current->read)
 		{
+			l = current->line;
+			if (!current->next || (current->next && (current->next)->fd != fd))
+				if (l &&  !l[0] && !l[1])
+					return (NULL);
 			current->read = 0;
 			return (current->line);
 		}
@@ -76,19 +102,20 @@ char *_getline(const int fd)
 	memset(buf, '\0', READ_SIZE);
 	n = read(fd, buf, READ_SIZE);
 
+	if (fd == -1)
+		free_all(head);
 	for (; n > 0 && !head; n = read(fd, buf, READ_SIZE))
 	{
 		full += n;
-		for (i = j = 0; j < READ_SIZE; j++)
+		for (i = j = 0; j <= READ_SIZE; j++)
 		{
 			if (buf[j] == '\n' || j == full)
 			{
-				line = malloc((j - i) * sizeof(char));
+				line = malloc(((j - i) + 1) * sizeof(char));
 				if (!line)
 					return (NULL);
-				memset(line, '\0', (j - i));
+				memset(line, '\0', (j - i) + 1);
 				memcpy(line, &buf[i], (j - i));
-				line[(j - i)] = '\0';
 				create_node(&head, fd, line);
 				i = j + 1;
 			}

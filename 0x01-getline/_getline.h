@@ -10,13 +10,12 @@
 #define READ_SIZE 1024
 
 /**
- * struct car - linked list
- * @id: id of car
- * @n_laps: number of laps
- * @run: 1 if make a lap 0 if not
+ * struct line - linked list
+ * @fd: file descriptor
+ * @read: is to be read? 1 yes 0 no
+ * @line: line to read
  * @next: points to the next node
- *
- * Description: linked list car structure
+ * Description: linked list of lines
  */
 typedef struct line
 {
