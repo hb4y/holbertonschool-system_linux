@@ -105,7 +105,9 @@ char *_getline(const int fd)
 	int n, full, i, j;
 
 	line = NULL;
-	end = full = 0;
+	end = 0;
+	full = 0;
+	memset(buf, 0, READ_SIZE);
 
 	if (fd == -1)
 	{
@@ -114,13 +116,12 @@ char *_getline(const int fd)
 		return (NULL);
 	}
 
-	memset(buf, '\0', READ_SIZE);
 	n = read(fd, buf, READ_SIZE);
 
 	for (; n > 0; n = read(fd, buf, READ_SIZE))
 	{
 		full += n;
-		for (i = j = 0; j <= READ_SIZE; j++)
+		for (i = j = 0; j < READ_SIZE; j++)
 		{
 			if (j == full || buf[j] == '\n')
 			{
