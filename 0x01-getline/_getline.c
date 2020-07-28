@@ -15,9 +15,13 @@ void free_all(line_n *head)
 	{
 		current = head;
 		head = head->next;
-		if (current->line)
+		if (current->read && current->line)
+		{
 			free(current->line);
-		free_all(current);
+			current->line = NULL;
+		}
+		free(current);
+		current = NULL;
 	}
 }
 
@@ -32,7 +36,6 @@ void free_all(line_n *head)
 char *get_line(line_n **head, int fd)
 {
 	line_n *current;
-	char *l;
 
 	if (!head || !*head)
 		return (NULL);
@@ -41,9 +44,8 @@ char *get_line(line_n **head, int fd)
 	{
 		if (current->fd == fd && current->read)
 		{
-			l = current->line;
 			if (!current->next || (current->next && (current->next)->fd != fd))
-				if (l &&  !l[0] && !l[1])
+				if (current->end)
 					return (NULL);
 			current->read = 0;
 			return (current->line);
@@ -61,7 +63,7 @@ char *get_line(line_n **head, int fd)
  * Return: return pointer to new node
  **/
 
-line_n *create_node(line_n **head, int fd, char *line)
+line_n *create_node(line_n **head, int fd, char *line, int end)
 {
 	line_n *new, *current;
 
@@ -71,6 +73,7 @@ line_n *create_node(line_n **head, int fd, char *line)
 		return (NULL);
 	new->fd = fd;
 	new->read = 1;
+	new->end = end;
 	new->line = line;
 	new->next = NULL;
 	if (!*head)
@@ -93,30 +96,37 @@ line_n *create_node(line_n **head, int fd, char *line)
 char *_getline(const int fd)
 {
 	static line_n *head;
-	char buf[READ_SIZE], *line;
+	char buf[READ_SIZE], *line, end;
 	int n, full, i, j;
 
 	line = NULL;
-	full = 0;
+	end = full = 0;
+
+	if (fd == -1)
+	{
+		free_all(head);
+		head = NULL;
+		return (NULL);
+	}
 
 	memset(buf, '\0', READ_SIZE);
 	n = read(fd, buf, READ_SIZE);
 
-	if (fd == -1)
-		free_all(head);
-	for (; n > 0 && !head; n = read(fd, buf, READ_SIZE))
+	for (; n > 0; n = read(fd, buf, READ_SIZE))
 	{
 		full += n;
 		for (i = j = 0; j <= READ_SIZE; j++)
 		{
-			if (buf[j] == '\n' || j == full)
+			if (j == full || buf[j] == '\n')
 			{
 				line = malloc(((j - i) + 1) * sizeof(char));
 				if (!line)
 					return (NULL);
 				memset(line, '\0', (j - i) + 1);
 				memcpy(line, &buf[i], (j - i));
-				create_node(&head, fd, line);
+				if (j == full)
+					end = 1;
+				create_node(&head, fd, line, end);
 				i = j + 1;
 			}
 		}

@@ -21,12 +21,13 @@ typedef struct line
 {
 	int fd;
 	short int read;
+	short int end;
 	char *line;
 	struct line *next;
 } line_n;
 
 char *get_line(line_n **head, int fd);
-line_n *create_node(line_n **head, int fd, char *line);
+line_n *create_node(line_n **head, int fd, char *line, int end);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char *_getline(const int fd);
 
