@@ -13,6 +13,7 @@
  * struct line - linked list
  * @fd: file descriptor
  * @read: is to be read? 1 yes 0 no
+ * @end: flag for EOF
  * @line: line to read
  * @next: points to the next node
  * Description: linked list of lines
