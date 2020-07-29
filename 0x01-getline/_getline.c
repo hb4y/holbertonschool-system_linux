@@ -45,6 +45,7 @@ char *get_line(line_n **head, int fd)
 		if (current->end)
 		{
 			free_all(*head);
+			*head = NULL;
 			return (NULL);
 		}
 		if (current->fd == fd && current->read)
@@ -65,6 +66,7 @@ char *get_line(line_n **head, int fd)
  * @head: head of list.
  * @fd: file descriptor.
  * @line: line from file.
+ * @end: check if EOF
  * Return: return pointer to new node
  **/
 
@@ -101,58 +103,43 @@ line_n *create_node(line_n **head, int fd, char *line, int end)
 char *_getline(const int fd)
 {
 	static line_n *head;
-	char buf[READ_SIZE], *line, *tmp, end;
-	int n, i, j, line_len, prev_len;
+	char buf[READ_SIZE], *line = NULL, *tmp = NULL;
+	int n, i, j, line_len = 0, prev_len = 0;
 
-	tmp = line = NULL;
-	line_len = prev_len = end = 0;
-	memset(buf, 0, READ_SIZE);
-
+	memset(buf, '\0', READ_SIZE);
 	if (fd == -1)
-	{
-		free_all(head);
+	{	free_all(head);
 		head = NULL;
 		return (NULL);
 	}
-
 	n = read(fd, buf, READ_SIZE);
-
-	for (; n > 0; n = read(fd, buf, READ_SIZE))
+	for (; n > 0; memset(buf, '\0', READ_SIZE), n = read(fd, buf, READ_SIZE))
 	{
 		for (i = j = 0; j < READ_SIZE; j++, line_len++)
 		{
 			if (!tmp)
 				prev_len++;
 			if (buf[j] == '\n')
-			{
-				line = malloc((line_len + 1) * sizeof(char));
+			{	line = malloc((line_len + 1) * sizeof(char));
 				memset(line, '\0', (line_len + 1));
 				if (!tmp)
 					memcpy(line, &buf[i], (j - i));
 				else
-				{
-					memcpy(line, tmp, prev_len);
-					memcpy(&line[prev_len - 1], &buf[i], (j - i));
-					prev_len = 0;
+				{	memcpy(line, tmp, prev_len + 1);
+					memcpy(&line[prev_len], &buf[i], (j - i));
 					free(tmp);
 					tmp = NULL;
 				}
-				create_node(&head, fd, line, end);
-				i = j + 1;
-				line_len = 0;
-			}else if (j == (READ_SIZE - 1))
-			{
-				tmp = malloc((prev_len + 1) * sizeof(char));
-				memset(tmp, '\0', (prev_len + 1));
-				memcpy(tmp, &buf[i], (j - i));
+				create_node(&head, fd, line, 0);
+				i = j + 1, prev_len = 0, line_len = 0;
+			} else if (j == (READ_SIZE - 1))
+			{	tmp = malloc((prev_len + 1) * sizeof(char));
+				memset(tmp, '\0', (prev_len + 1)), memcpy(tmp, &buf[i], (j - i) + 1);
 			}
 		}
 	}
 	if (tmp)
-	{
-		free(tmp);
-		tmp = NULL;
-	}
+		free(tmp), tmp = NULL;
 	create_node(&head, fd, NULL, 1);
 	return (get_line(&head, fd));
 }
