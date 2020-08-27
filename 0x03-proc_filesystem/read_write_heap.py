@@ -33,23 +33,15 @@ except:
 for line in men_map:
     info = line.split()
     if "[heap]" in info:
-        if (info[1][0] != 'r') or (info[1][1] != 'w'):
-            print("read/write denied")
-            men_map.close()
-            exit(0)
         addr = info[0].split("-")
         addr_start = int(addr[0], 16)
         addr_end = int(addr[1], 16)
         mem_file.seek(addr_start)
         heap = mem_file.read(addr_end - addr_start)
+        i = heap.find(str.encode(search_string))
 
-        try:
-            i = heap.index(bytes(search_string, "ASCII"))
-        except Exception:
-            print("Can't find the string in the heap")
-            men_map.close()
-            mem_file.close()
-            exit(0)
+        if i == -1:
+            break
 
         mem_file.seek(addr_start + i)
         mem_file.write(bytes(sys.argv[3], "ASCII"))
