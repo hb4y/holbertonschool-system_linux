@@ -14,24 +14,20 @@ def write_heap():
         print(e)
         exit(1)
 
-    pid = int(sys.argv[1])
+    pid = sys.argv[1]
     search_string = str(sys.argv[2])
     replace_string = str(sys.argv[3])
 
-    if (pid <= 0) or (search_string == "") or (replace_string == ""):
-        print("Error: bad argument format")
-        sys.exit(1)
-
     try:
         men_map = open('/proc/{}/maps'.format(pid), 'r')
-    except:
-        print("Error: cannot open map")
+    except Exception as e:
+        print(e)
         exit(1)
 
     try:
         mem_file = open("/proc/{}/mem".format(pid), 'rb+')
-    except:
-        print("Error: Can not open men file")
+    except Exception as e:
+        print(e)
         men_map.close()
         exit(1)
 
