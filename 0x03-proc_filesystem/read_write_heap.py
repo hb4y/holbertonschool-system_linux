@@ -7,7 +7,7 @@ import sys
 
 if len(sys.argv) != 4:
     print("Usage: read_write_heap.py <pid> <search_string> <replace_string>")
-    sys.exit(1)
+    exit(1)
 
 pid = int(sys.argv[1])
 search_string = str(sys.argv[2])
@@ -30,7 +30,7 @@ except:
     men_map.close()
     exit(1)
 
-for line in men_map:
+for line in men_map.readlines():
     info = line.split()
     if "[heap]" in info:
         addr = info[0].split("-")
@@ -44,7 +44,7 @@ for line in men_map:
             break
 
         mem_file.seek(addr_start + i)
-        mem_file.write(bytes(sys.argv[3], "ASCII"))
+        mem_file.write(str.encode(sys.argv[3]) + b'\x00')
         break
 
 men_map.close()
