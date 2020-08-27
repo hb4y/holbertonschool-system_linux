@@ -6,8 +6,11 @@ import sys
 
 
 def write_heap():
+    """
+    Script that over write the heap
+    """
     if len(sys.argv) != 4:
-        e = "Usage: read_write_heap.py <pid> <search_string> <replace_string>"
+        e = "Usage: read_write_heap.py pid search_string replace_string"
         print(e)
         exit(1)
 
