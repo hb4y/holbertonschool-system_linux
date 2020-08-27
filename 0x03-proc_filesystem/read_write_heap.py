@@ -21,7 +21,7 @@ try:
     men_map = open('/proc/{}/maps'.format(pid), 'r')
 except:
     print("Error: cannot open map")
-    sys.exit(1)
+    exit(1)
 
 try:
     mem_file = open("/proc/{}/mem".format(pid), 'rb+')
@@ -31,19 +31,13 @@ except:
     exit(1)
 
 for line in men_map:
-    info = line.split(' ')
+    info = line.split()
     if "[heap]" in info:
         if (info[1][0] != 'r') or (info[1][1] != 'w'):
             print("read/write denied")
             men_map.close()
             exit(0)
-
         addr = info[0].split("-")
-        if len(addr) != 2:
-            print("Error: Invalid addr")
-            men_map.close()
-            exit(1)
-
         addr_start = int(addr[0], 16)
         addr_end = int(addr[1], 16)
         mem_file.seek(addr_start)
