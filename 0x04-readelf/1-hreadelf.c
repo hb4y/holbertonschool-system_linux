@@ -12,10 +12,10 @@
 
 int main(int argc, char **argv, char **env)
 {
-	char *newargv[] = {"-W", "-S", ""};
+	char *newargv[] = {"/usr/bin/readelf", "-W", "-S", ""};
 
 	(void) argc;
-	newargv[2] = argv[1];
+	newargv[3] = argv[1];
 
 	if (execve("/usr/bin/readelf", newargv, env) != -1)
 		return (EXIT_SUCCESS);
