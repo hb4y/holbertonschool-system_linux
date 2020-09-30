@@ -13,7 +13,7 @@
 int main(int argc, char **argv, char **env)
 {
 	char *newargv[] = {"-W", "-h", ""};
-	
+
 	(void) argc;
 	newargv[2] = argv[1];
 
