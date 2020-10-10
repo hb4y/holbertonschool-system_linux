@@ -2,7 +2,7 @@
 
 /**
  * signal_c - Catch SIGINT
- * @signal: the signal
+ * @sig: the signal
  */
 void signal_c(int sig)
 {
