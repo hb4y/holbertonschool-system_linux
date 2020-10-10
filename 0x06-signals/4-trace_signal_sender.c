@@ -26,5 +26,5 @@ int trace_signal_sender(void)
 	memset(&action, 0, sizeof(action));
 	action.sa_flags |= SA_SIGINFO;
 	action.sa_sigaction = signal_handler;
-	return (sigaction(SIGQUIT, &act, NULL));
+	return (sigaction(SIGQUIT, &action, NULL));
 }
