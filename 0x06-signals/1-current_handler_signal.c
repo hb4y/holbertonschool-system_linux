@@ -6,5 +6,10 @@
  */
 void (*current_handler_signal(void))(int)
 {
-	return (signal(SIGINT, signal(SIGINT, NULL)));
+	void (*sig)(int);
+
+	sig = signal(SIGINT, NULL);
+	signal(SIGINT, sig);
+
+	return (sig);
 }
