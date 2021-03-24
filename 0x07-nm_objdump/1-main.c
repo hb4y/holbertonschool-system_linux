@@ -12,13 +12,13 @@
 
 int main(int argc, char **argv, char **env)
 {
-	char *av[] = {"./hnm", "-sf", "", NULL};
+	char *av[] = {"./hobjdump", "-sf", "", NULL};
 
 	(void)argc;
 
 	av[2] = argv[1];
 
-	if (execve("/usr/bin/nm", av, env) == -1)
+	if (execve("/usr/bin/objdump", av, env) == -1)
 	{
 		perror("execv");
 
