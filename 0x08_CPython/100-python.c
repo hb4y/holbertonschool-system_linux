@@ -26,6 +26,7 @@ void print_python_int(PyObject *p)
 	for (i = 0; i < abs(size); i++)
 		val += digit[i] * (1L << (i * PyLong_SHIFT));
 	if (size < 0)
-		putchar('-');
+
+	putchar('-');
 	printf("%lu\n", val);
 }
