@@ -14,7 +14,7 @@
 #include <sys/user.h>
 #include "syscalls.h"
 
-char *read_string(pid_t sub_pro_pid, unsigned long addr);
-void print_retval(long retval, struct user_regs_struct ur);
+char *read_s(pid_t sub_pro_pid, unsigned long addr);
+void re_print(long ret, struct user_regs_struct ur);
 
 #endif /* LINUX_STRACE_H */

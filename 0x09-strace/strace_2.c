@@ -52,7 +52,7 @@ int wait(pid_t sub_pro)
 int trace(pid_t sub_pro)
 {
 	int stat;
-	long syscall, retval;
+	long syscall, ret;
 
 	waitpid(sub_pro, &stat, 0);
 	setbuf(stdout, NULL);
@@ -66,8 +66,8 @@ int trace(pid_t sub_pro)
 		fprintf(stdout, "%s", syscalls_64_g[syscall].name);
 		if (wait(sub_pro) != 0)
 			break;
-		retval = ptrace(PTRACE_PEEKUSER, sub_pro, sizeof(long) * RAX);
-		fprintf(stdout, " = %#lx\n", retval);
+		ret = ptrace(PTRACE_PEEKUSER, sub_pro, sizeof(long) * RAX);
+		fprintf(stdout, " = %#lx\n", ret);
 	}
 	fprintf(stdout, " = ?\n");
 	return (EXIT_SUCCESS);

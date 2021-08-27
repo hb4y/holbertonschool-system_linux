@@ -44,7 +44,7 @@ void aux_print(struct user_regs_struct ur, int index, ulong register,
 			fprintf(stdout, "%s...", str);
 		else if (syscalls_64_g[ur.orig_rax].params[index] == CHAR_P)
 		{
-			s = read_string(sub_pro_pid, register);
+			s = read_s(sub_pro_pid, register);
 			fprintf(stdout, "%s\"%s\"", str, s);
 			free(s);
 		}
@@ -98,7 +98,7 @@ void print_two(struct user_regs_struct ur, pid_t sub_pro_pid)
 int trace(pid_t sub_pro, int argc, char *argv[], char *envp[])
 {
 	int stat, i;
-	long retval;
+	long ret;
 	struct user_regs_struct ur;
 
 	setbuf(stdout, NULL);
@@ -112,13 +112,13 @@ int trace(pid_t sub_pro, int argc, char *argv[], char *envp[])
 	if (wait(sub_pro) != 0)
 		return (0);
 
-	retval = ptrace(PTRACE_PEEKUSER, sub_pro, sizeof(long) * RAX);
+	ret = ptrace(PTRACE_PEEKUSER, sub_pro, sizeof(long) * RAX);
 	fprintf(stdout, "execve(\"%s\", [", argv[0]);
 	for (i = 0; i < argc; ++i)
 		printf("%s\"%s\"", i == 0 ? "" : ", ", argv[i]);
 	for (i = 0; envp[i]; ++i)
 		;
-	printf("], [/* %d vars */]) = %#lx\n", i, retval);
+	printf("], [/* %d vars */]) = %#lx\n", i, ret);
 	while (1)
 	{
 		if (wait(sub_pro) != 0)
@@ -130,8 +130,8 @@ int trace(pid_t sub_pro, int argc, char *argv[], char *envp[])
 		if (wait(sub_pro) != 0)
 			break;
 
-		retval = ptrace(PTRACE_PEEKUSER, sub_pro, sizeof(long) * RAX);
-		print_retval(retval, ur);
+		ret = ptrace(PTRACE_PEEKUSER, sub_pro, sizeof(long) * RAX);
+		re_print(ret, ur);
 	}
 	fprintf(stdout, ") = ?\n");
 	return (EXIT_SUCCESS);
