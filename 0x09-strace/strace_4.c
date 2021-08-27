@@ -2,11 +2,11 @@
 #include "syscalls.h"
 
 /**
- * wait - syscall sub
+ * wait_aux - syscall sub
  * @sub_pro: PID
  * Return: 0 sub_pro success
 */
-int wait(pid_t sub_pro)
+int wait_aux(pid_t sub_pro)
 {
 	int stat;
 
@@ -87,11 +87,11 @@ int trace(pid_t sub_pro, int argc, char *argv[], char *envp[])
 	waitpid(sub_pro, &stat, 0);
 	ptrace(PTRACE_SETOPTIONS, sub_pro, 0, PTRACE_O_TRACESYSGOOD);
 
-	if (wait(sub_pro) != 0)
+	if (wait_aux(sub_pro) != 0)
 		return (0);
 
 	ptrace(PTRACE_GETREGS, sub_pro, 0, &ur);
-	if (wait(sub_pro) != 0)
+	if (wait_aux(sub_pro) != 0)
 		return (0);
 
 	ret = ptrace(PTRACE_PEEKUSER, sub_pro, sizeof(long) * RAX);
@@ -104,12 +104,12 @@ int trace(pid_t sub_pro, int argc, char *argv[], char *envp[])
 
 	while (1)
 	{
-		if (wait(sub_pro) != 0)
+		if (wait_aux(sub_pro) != 0)
 			break;
 		ptrace(PTRACE_GETREGS, sub_pro, 0, &ur);
 		fprintf(stdout, "%s(", syscalls_64_g[ur.orig_rax].name);
 		print_two(ur, sub_pro);
-		if (wait(sub_pro) != 0)
+		if (wait_aux(sub_pro) != 0)
 			break;
 		ret = ptrace(PTRACE_PEEKUSER, sub_pro, sizeof(long) * RAX);
 		fprintf(stdout, ") = %#lx\n", ret);

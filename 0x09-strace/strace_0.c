@@ -1,7 +1,7 @@
 #include "strace.h"
 #include <stdlib.h>
 #include <sys/types.h>
-#include <sys/register.h>
+#include <sys/reg.h>
 
 /**
  * proc_aux - aux process
@@ -22,11 +22,11 @@ int proc_aux(int argc, char *argv[], char *envp[])
 }
 
 /**
- * wait - syscall sub
+ * wait_aux - syscall sub
  * @sub_pro: PID
  * Return: 0 sub_pro success
 */
-int wait(pid_t sub_pro)
+int wait_aux(pid_t sub_pro)
 {
 	int stat;
 
@@ -58,11 +58,11 @@ int trace(pid_t sub_pro)
 	ptrace(PTRACE_SETOPTIONS, sub_pro, 0, PTRACE_O_TRACESYSGOOD);
 	while (1)
 	{
-		if (wait(sub_pro) != 0)
+		if (wait_aux(sub_pro) != 0)
 			break;
 		syscall = ptrace(PTRACE_PEEKUSER, sub_pro, sizeof(long) * ORIG_RAX);
 		fprintf(stdout, "%ld\n", syscall);
-		if (wait(sub_pro) != 0)
+		if (wait_aux(sub_pro) != 0)
 			break;
 	}
 	return (EXIT_SUCCESS);

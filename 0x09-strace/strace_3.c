@@ -4,14 +4,14 @@
 #include <stdlib.h>
 #include <sys/ptrace.h>
 #include <sys/types.h>
-#include <sys/register.h>
+#include <sys/reg.h>
 
 /**
- * wait - syscall sub
+ * wait_aux - syscall sub
  * @sub_pro: PID
  * Return: 0 sub_pro success
 */
-int wait(pid_t sub_pro)
+int wait_aux(pid_t sub_pro)
 {
 	int stat;
 
@@ -75,11 +75,11 @@ int trace(pid_t sub_pro)
 
 	waitpid(sub_pro, &stat, 0);
 	ptrace(PTRACE_SETOPTIONS, sub_pro, 0, PTRACE_O_TRACESYSGOOD);
-	if (wait(sub_pro) != 0)
+	if (wait_aux(sub_pro) != 0)
 		return (EXIT_SUCCESS);
 
 	ptrace(PTRACE_GETREGS, sub_pro, 0, &ur);
-	if (wait(sub_pro) != 0)
+	if (wait_aux(sub_pro) != 0)
 		return (EXIT_SUCCESS);
 
 	ptrace(PTRACE_GETREGS, sub_pro, 0, &ur);
@@ -87,12 +87,12 @@ int trace(pid_t sub_pro)
 
 	while (1)
 	{
-		if (wait(sub_pro) != 0)
+		if (wait_aux(sub_pro) != 0)
 			break;
 		ptrace(PTRACE_GETREGS, sub_pro, 0, &ur);
 		fprintf(stdout, "%s(", syscalls_64_g[ur.orig_rax].name);
 		print_two(ur);
-		if (wait(sub_pro) != 0)
+		if (wait_aux(sub_pro) != 0)
 			break;
 		ptrace(PTRACE_GETREGS, sub_pro, 0, &ur);
 		fprintf(stdout, ") = %#lx\n", (ulong)ur.rax);
