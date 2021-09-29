@@ -3,6 +3,7 @@
 /**
  * thread_entry - thread entry
  * @arg: pointer to string
+ * Return: void
  */
 void *thread_entry(void *arg)
 {
