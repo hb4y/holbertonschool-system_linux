@@ -11,7 +11,7 @@ all : todo_api_0
 todo_api_0: $(TMPDIR) $(O_FILE0)
 	gcc $(CFLAGS) -o $@ $(O_FILE0)
 
-$(TMPDIR)%.o: %.c server_aux.h crud.h
+$(TMPDIR)%.o: %.c server_aux.h ops.h
 	gcc $(CFLAGS) -c $< -o $@
 
 $(TMPDIR):
